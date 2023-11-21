@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -16,11 +17,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['createUser'])]
+    #[Groups(['user:read', 'request:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['createUser'])]
+    #[Groups(['user:read', 'request:read'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -31,11 +32,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['createUser'])]
+    #[Groups(['user:read'])]
     private ?string $password = null;
 
     #[ORM\OneToOne(mappedBy: 'ofUser', cascade: ['persist', 'remove'])]
-    #[Groups(['createUser'])]
     private ?Profile $profile = null;
 
     public function getId(): ?int
