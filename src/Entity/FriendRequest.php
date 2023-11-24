@@ -12,42 +12,60 @@ class FriendRequest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_requests', 'create_user',"show_receivedRequests"])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'recipientprofile')]
+    #[ORM\ManyToOne(inversedBy: 'receivedFriendRequests')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['request:read'])]
-    private ?Profile $recipientProfile = null;
+    #[Groups(['show_requests',"show_receivedRequests"])]
+    private ?Profile $ofProfile = null;
 
-    #[ORM\ManyToOne(inversedBy: 'senderprofile')]
-    #[Groups(['request:read'])]
-    private ?Profile $senderprofile = null;
+    #[ORM\ManyToOne(inversedBy: 'sentFriendRequests')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['sentBy', 'show_requests', 'show_profiles'])]
+    private ?Profile $toProfile = null;
+
+    #[ORM\Column]
+    #[Groups('show_requests')]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getRecipientProfile(): ?Profile
+    public function getOfProfile(): ?Profile
     {
-        return $this->recipientProfile;
+        return $this->ofProfile;
     }
 
-    public function setRecipientProfile(?Profile $recipientProfile): static
+    public function setOfProfile(?Profile $ofProfile): static
     {
-        $this->recipientProfile = $recipientProfile;
+        $this->ofProfile = $ofProfile;
 
         return $this;
     }
 
-    public function getSenderprofile(): ?Profile
+    public function getToProfile(): ?Profile
     {
-        return $this->senderprofile;
+        return $this->toProfile;
     }
 
-    public function setSenderprofile(?Profile $senderprofile): static
+    public function setToProfile(?Profile $toProfile): static
     {
-        $this->senderprofile = $senderprofile;
+        $this->toProfile = $toProfile;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
